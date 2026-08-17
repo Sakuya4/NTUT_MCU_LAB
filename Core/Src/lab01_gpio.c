@@ -39,3 +39,22 @@ void LAB1_3(void)
         }
     }
 }
+
+void LAB1_4(void)
+{
+  GPIO_PinState currentButtonState;
+  GPIO_PinState previousButtonState = GPIO_PIN_RESET;
+
+  while(1)
+  {
+	currentButtonState = HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin);
+	if((currentButtonState == GPIO_PIN_SET)&&(previousButtonState == GPIO_PIN_RESET))
+	{
+	  HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+	}
+
+	previousButtonState = currentButtonState;
+  }
+
+
+}

@@ -1,6 +1,6 @@
 # NTUT MCU Lab
 
-GPIO practice for the **STM32F769I-DISCO** board using STM32CubeIDE, STM32CubeMX, and the STM32 HAL.
+GPIO and UART practice for the **STM32F769I-DISCO** board using STM32CubeIDE, STM32CubeMX, and the STM32 HAL.
 
 ## Hardware and source
 
@@ -11,10 +11,17 @@ GPIO practice for the **STM32F769I-DISCO** board using STM32CubeIDE, STM32CubeMX
 
 ## Lab documentation
 
+### LAB1 - GPIO
+
 - [LAB1-1 - Toggle both LEDs every 500 ms](doc/LAB1-1.md)
 - [LAB1-2 - Control each LED explicitly](doc/LAB1-2.md)
 - [LAB1-3 - Turn on the LED while the user button is pressed](doc/LAB1-3.md)
 - [LAB1-4 - Toggle the LED on each button press](doc/LAB1-4.md)
+
+### LAB2 - GPIO counter and UART
+
+- [LAB2-1 - Display a two-bit button counter on the LEDs](doc/LAB2-1.md)
+- [LAB2-2 - Transmit the button counter over USART1](doc/LAB2-2.md)
 
 ## Selecting a lab
 
@@ -22,7 +29,8 @@ Each lab function contains its own infinite loop, so only one lab should be call
 
 ```c
 MX_GPIO_Init();
-LAB1_4(); /* Change this to LAB1_1(), LAB1_2(), LAB1_3(), or LAB1_4(). */
+MX_USART1_UART_Init();
+LAB2_2();
 ```
 
-The current `main.c` calls `LAB1_4()`. All four lab functions are implemented in `Core/Src/lab01_gpio.c`, with declarations in `Core/Inc/lab01_gpio.h`.
+The current `main.c` calls `LAB2_2()`. LAB1 functions are stored in `Core/Src/lab01_gpio.c`, and LAB2 functions are stored in `Core/Src/lab02_uart.c`.

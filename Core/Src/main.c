@@ -87,7 +87,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  LAB1_1();
+  LAB1_2();
   /* USER CODE END 2 */
 
   /* Infinite loop */

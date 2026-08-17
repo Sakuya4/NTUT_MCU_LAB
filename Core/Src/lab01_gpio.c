@@ -23,3 +23,19 @@ void LAB1_2(void)
 	  HAL_Delay(500);
   }
 }
+
+void LAB1_3(void)
+{
+    while (1)
+    {
+        if (HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET)
+        {
+          HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+        }
+
+        else
+        {
+          HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+        }
+    }
+}

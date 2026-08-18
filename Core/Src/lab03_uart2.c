@@ -188,6 +188,72 @@ while(1)
 }
 
 /*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB3_3_A(void)
+*
+*   DESCRIPTION:
+*       Ultimate password guessing game.
+*       User enters a number and the program narrows the valid range
+*       until the correct answer is found.
+*       e.g. 1 ~ 100, answer = 65
+*
+*********************************************************************/
+
+void LAB3_3_A(void)
+{
+char input[32];
+char message[80];
+
+int32_t answer;
+int32_t guess;
+int32_t min;
+int32_t max;
+
+	while(1)
+		{
+		min = 1;
+		max = 100;
+		answer=(HAL_GetTick()%100)+1;
+
+		char start[]="\r\n******* password *******\r\n";
+		HAL_UART_Transmit(&huart1, (uint8_t *)start, strlen(start), HAL_MAX_DELAY);
+
+		while(1)
+			{
+			snprintf(message, sizeof(message), "Range: %ld ~ %ld\r\nGuess: ", (long)min, (long)max);
+			HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+
+            UART_ReadLine(input, sizeof(input));
+            guess = (int32_t)strtol(input, NULL, 10);
+
+            	if (guess < min || guess > max)
+					{
+					char error[] = "Out of range\r\n\r\n";
+					HAL_UART_Transmit(&huart1, (uint8_t *)error, strlen(error), HAL_MAX_DELAY);
+					continue;
+					}
+                if (guess == answer)
+					{
+					snprintf(message, sizeof(message), "Correct, Answer = %ld\r\n", (long)answer);
+					HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+					break;
+					}
+                else if (guess < answer)
+					{
+					min = guess + 1;
+					}
+                else
+					{
+					max = guess - 1;
+					}
+			}
+
+		}
+
+}
+
+/*********************************************************************
  *
  * TOOL
  * DESCRIPTION: Can type long number, and use "enter" can transmit it

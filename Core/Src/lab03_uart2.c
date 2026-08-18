@@ -106,6 +106,86 @@ void LAB3_2_A(void)
 
 }
 
+/*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB3_2_B(void)
+*
+*   DESCRIPTION:
+*       Calculate GCD and LCM from two numbers entered by the user.
+*       e.g. 12, 18 -> GCD = 6, LCM = 36
+*
+*********************************************************************/
+
+void LAB3_2_B(void)
+{
+char input[32];
+char message[80];
+int32_t a;
+int32_t b;
+int32_t x;
+int32_t y;
+int32_t temp;
+int32_t gcd;
+int32_t lcm;
+
+while(1)
+	{
+    char text1[] = "Input a: ";
+    HAL_UART_Transmit(&huart1, (uint8_t *)text1, strlen(text1), HAL_MAX_DELAY);
+	UART_ReadLine(input, sizeof(input));
+    a = (int32_t)strtol(input, NULL, 10);
+
+    char text2[] = "Input b: ";
+    HAL_UART_Transmit(&huart1, (uint8_t *)text2, strlen(text2), HAL_MAX_DELAY);
+    UART_ReadLine(input, sizeof(input));
+    b = (int32_t)strtol(input, NULL, 10);
+
+    x = a;
+    y = b;
+    if (x < 0)
+        {
+        x = -x;
+        }
+
+    if (y < 0)
+        {
+        y = -y;
+        }
+
+    if(x==0&&y==0)
+    	{
+    	char error[]="GCD and LCM are undefined.\r\n\r\n";
+    	HAL_UART_Transmit(&huart1, (uint8_t *)error, strlen(error), HAL_MAX_DELAY);
+    	continue;
+    	}
+    while(y!=0)  // Euclidean algo
+    	{
+    	temp=x%y;
+    	x=y;
+    	y=temp;
+    	}
+    gcd=x;
+
+    if(a==0||b==0)
+    	{
+    	lcm=0;
+    	}
+    else
+    	{
+    	lcm = (a / gcd) * b;
+
+    	if (lcm < 0)
+    		{
+    		lcm = -lcm;
+    		}
+    	}
+    snprintf(message, sizeof(message), "GCD = %ld\r\nLCM = %ld\r\n\r\n", (long)gcd, (long)lcm);
+    HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+
+	}
+
+}
 
 /*********************************************************************
  *

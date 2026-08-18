@@ -1,0 +1,102 @@
+#include "lab03_uart2.h"
+#include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+extern UART_HandleTypeDef huart1;
+
+
+/*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB3_1(void)
+*
+*   DESCRIPTION:
+*       user type number a & b, will add it.
+*
+*********************************************************************/
+void LAB3_1(void)
+{
+    char input[32];
+    char message[64];
+
+    int32_t a;
+    int32_t b;
+    int32_t result;
+
+    while (1)
+    {
+        char text1[] = "Input a: ";
+        HAL_UART_Transmit(&huart1, (uint8_t *)text1, strlen(text1), HAL_MAX_DELAY);
+
+        UART_ReadLine(input, sizeof(input));
+        a = (int32_t)strtol(input, NULL, 10);
+
+        char text2[] = "Input b: ";
+        HAL_UART_Transmit(&huart1, (uint8_t *)text2, strlen(text2), HAL_MAX_DELAY);
+
+        UART_ReadLine(input, sizeof(input));
+        b = (int32_t)strtol(input, NULL, 10);
+
+        result = a + b;
+
+        snprintf(message, sizeof(message), "a + b = %ld\r\n\r\n", (long)result);
+        HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+    }
+}
+
+/*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB3_2(void)
+*
+*   DESCRIPTION:
+*       user type number a & b, will add it.
+*
+*********************************************************************/
+
+
+/*********************************************************************
+ *
+ * TOOL
+ * DESCRIPTION: Can type long number, and use "enter" can transmit it
+ *
+ *
+*********************************************************************/
+static void UART_ReadLine(char *buffer, uint16_t size)
+{
+    uint16_t index = 0;
+    uint8_t ch;
+
+    while (1)
+    {
+        HAL_UART_Receive(&huart1, &ch, 1, HAL_MAX_DELAY);
+
+        if (ch == '\r' || ch == '\n')
+        {
+            if (index == 0)
+            {
+                continue;
+            }
+
+            buffer[index] = '\0';
+
+            char newline[] = "\r\n";
+            HAL_UART_Transmit(&huart1, (uint8_t *)newline, strlen(newline), HAL_MAX_DELAY);
+
+            break;
+        }
+
+        if (index < size - 1)
+        {
+            buffer[index] = ch;
+            index++;
+
+            HAL_UART_Transmit(&huart1, &ch, 1, HAL_MAX_DELAY);
+        }
+    }
+}
+
+
+

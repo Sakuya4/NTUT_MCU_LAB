@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "lab01_gpio.h"
 #include "lab02_uart.h"
+#include "lab03_uart2.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,7 +93,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  LAB2_2();
+  LAB3_1();
   /* USER CODE END 2 */
 
   /* Infinite loop */

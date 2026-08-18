@@ -23,6 +23,14 @@ GPIO and UART practice for the **STM32F769I-DISCO** board using STM32CubeIDE, ST
 - [LAB2-1 - Display a two-bit button counter on the LEDs](doc/LAB2-1.md)
 - [LAB2-2 - Transmit the button counter over USART1](doc/LAB2-2.md)
 
+### LAB3 - Bidirectional UART and algorithms
+
+- [LAB3-1 - Add two multi-digit integers over UART](doc/LAB3-1.md)
+- [LAB3-2-A - Generate a Fibonacci sequence over UART](doc/LAB3-2-A.md)
+- [LAB3-2-B - Calculate GCD and LCM over UART](doc/LAB3-2-B.md)
+- [LAB3-3-A - Play the ultimate password guessing game over UART](doc/LAB3-3-A.md)
+- [LAB3-3-B - Sort UART input with Quick Sort](doc/LAB3-3-B.md)
+
 ## Selecting a lab
 
 Each lab function contains its own infinite loop, so only one lab should be called at a time in `main.c` after `MX_GPIO_Init()`:
@@ -30,7 +38,7 @@ Each lab function contains its own infinite loop, so only one lab should be call
 ```c
 MX_GPIO_Init();
 MX_USART1_UART_Init();
-LAB2_2();
+LAB3_3_B();
 ```
 
-The current `main.c` calls `LAB2_2()`. LAB1 functions are stored in `Core/Src/lab01_gpio.c`, and LAB2 functions are stored in `Core/Src/lab02_uart.c`.
+The current `main.c` calls `LAB3_3_B()`. LAB1 functions are stored in `Core/Src/lab01_gpio.c`, LAB2 functions are stored in `Core/Src/lab02_uart.c`, and LAB3 functions are stored in `Core/Src/lab03_uart2.c`.

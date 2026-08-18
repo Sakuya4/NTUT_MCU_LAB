@@ -88,44 +88,114 @@ HAL_TIM_Base_Start_IT(&htim1);
 *********************************************************************/
 void LAB5_2(void)
 {
-    int32_t duty = 0;
-    int32_t direction = 1;
+int32_t duty = 0;
+int32_t direction = 1;
 
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-    __HAL_TIM_SET_AUTORELOAD(&htim6, 0xFFFF);
-    HAL_TIM_Base_Start(&htim6);
+HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+__HAL_TIM_SET_AUTORELOAD(&htim6, 0xFFFF);
+HAL_TIM_Base_Start(&htim6);
 
     while (1)
-    {
-        /* Keep each brightness level for 20 PWM periods. */
-        for (uint32_t cycle = 0; cycle < 20; cycle++)
-        {
-            __HAL_TIM_SET_COUNTER(&htim6, 0);
+		{
 
-            if (duty > 0)
-            {
-                HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+			for (uint32_t cycle = 0; cycle < 20; cycle++)
+				{
+				__HAL_TIM_SET_COUNTER(&htim6, 0);
 
-                while (__HAL_TIM_GET_COUNTER(&htim6) < (uint32_t)duty)
-                {
-                }
-            }
+					if (duty > 0)
+						{
+						HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+							while (__HAL_TIM_GET_COUNTER(&htim6) < (uint32_t)duty)
+								{
+								}
+						}
 
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
 
-            while (__HAL_TIM_GET_COUNTER(&htim6) < 100)
-            {
-            }
-        }
+					while (__HAL_TIM_GET_COUNTER(&htim6) < 100)
+						{
+						}
+				}
+
+			duty += direction;
+				if (duty >= 100 || duty <= 0)
+				{
+				direction = -direction;
+				}
+		}
+}
+
+/*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB5_3_A(void)
+*
+*   DESCRIPTION:
+*       Control the breathing LED speed through UART.
+*       Speed level 1 is slow and speed level 5 is fast.
+*
+*********************************************************************/
+void LAB5_3_A(void)
+{
+char input[32];
+char message[64];
+
+int32_t speed;
+int32_t duty = 0;
+int32_t direction = 1;
+uint32_t holdCycle;
+
+char text[] = "Breathing Speed (1 ~ 5): ";
+HAL_UART_Transmit(&huart1, (uint8_t *)text, strlen(text), HAL_MAX_DELAY);
+
+UART_ReadLine(input, sizeof(input));
+speed = (int32_t)strtol(input, NULL, 10);
+
+	if (speed < 1 || speed > 5)
+		{
+		char error[] = "Invalid speed.\r\n";
+		HAL_UART_Transmit(&huart1, (uint8_t *)error, strlen(error), HAL_MAX_DELAY);
+		return;
+		}
+
+holdCycle = 60 - (speed * 10);
+
+snprintf(message, sizeof(message), "Speed Level = %ld\r\n", (long)speed);
+HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+__HAL_TIM_SET_AUTORELOAD(&htim6, 0xFFFF);
+HAL_TIM_Base_Start(&htim6);
+
+    while (1)
+    	{
+			for (uint32_t cycle = 0; cycle < holdCycle; cycle++)
+				{
+				__HAL_TIM_SET_COUNTER(&htim6, 0);
+				if (duty > 0)
+					{
+					HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+
+						while (__HAL_TIM_GET_COUNTER(&htim6) < (uint32_t)duty)
+						{
+						}
+
+					}
+
+				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+
+					while (__HAL_TIM_GET_COUNTER(&htim6) < 100)
+					{
+					}
+				}
 
         duty += direction;
-
-        if (duty >= 100 || duty <= 0)
-        {
-            direction = -direction;
-        }
-    }
+			if (duty >= 100 || duty <= 0)
+			{
+			direction = -direction;
+			}
+    	}
 }
+
 
 /*********************************************************************
  *

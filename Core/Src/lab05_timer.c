@@ -6,8 +6,10 @@
 
 extern TIM_HandleTypeDef htim1;
 extern UART_HandleTypeDef huart1;
+extern TIM_HandleTypeDef htim6;
 
 static void UART_ReadLine(char *buffer, uint16_t size);
+
 
 /*********************************************************************
 *
@@ -24,6 +26,7 @@ static volatile int32_t hour = 0;
 static volatile int32_t minute = 0;
 static volatile int32_t second = 0;
 static volatile uint8_t timerUpdate = 0;
+
 
 void LAB5_1(void)
 {
@@ -72,6 +75,47 @@ HAL_TIM_Base_Start_IT(&htim1);
 }
 
 
+/*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB5_2(void)
+*
+*   DESCRIPTION:
+*       Use Timer interrupt to generate software PWM for the onboard LED.
+*       Duty cycle changes from 1% to 100%, then from 100% to 1%
+*       to create a breathing light effect.
+*
+*********************************************************************/
+static volatile uint8_t pwmCounter = 0;
+static volatile uint8_t pwmDuty = 1;
+
+
+void LAB5_2(void)
+{
+    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+
+    pwmCounter = 0;
+    pwmDuty = 1;
+
+    HAL_TIM_Base_Start_IT(&htim6);
+
+    while (1)
+    {
+        /* Dark -> Bright */
+        for (int32_t duty = 1; duty <= 19; duty++)
+        {
+            pwmDuty = duty;
+            HAL_Delay(150);
+        }
+
+        /* Bright -> Dark */
+        for (int32_t duty = 19; duty >= 1; duty--)
+        {
+            pwmDuty = duty;
+            HAL_Delay(150);
+        }
+    }
+}
 
 /*********************************************************************
  *
@@ -103,6 +147,25 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         }
 
         timerUpdate = 1;
+    }
+
+    if (htim->Instance == TIM6)
+    {
+        pwmCounter++;
+
+        if (pwmCounter >= 20)
+        {
+            pwmCounter = 0;
+        }
+
+        if (pwmCounter < pwmDuty)
+        {
+            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+        }
+        else
+        {
+            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+        }
     }
 }
 

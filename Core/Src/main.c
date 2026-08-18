@@ -97,7 +97,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  LAB4_1();
+  LAB4_2();
   /* USER CODE END 2 */
 
   /* Infinite loop */

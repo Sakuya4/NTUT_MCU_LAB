@@ -7,6 +7,6 @@ void LAB3_2_B(void);
 void LAB3_3_A(void);
 void LAB3_3_B(void);
 
-static void UART_ReadLine(char *buffer, uint16_t size); // tool
+
 
 #endif /* INC_LAB03_UART2_H_ */

@@ -98,7 +98,79 @@ An earlier interrupt-based implementation used the `1.53 Hz` overflow as its sof
 
 ## Existing official PWM waveform examples
 
-ST publishes oscilloscope captures for `10%`, `50%`, and `80%` duty cycles in [Getting started with HRTIM, Section 3: Result](https://wiki.st.com/stm32mcu/wiki/Getting_started_with_HRTIM#3._Result). Those existing official images show the exact visual concept used here: the period remains fixed while the high portion changes width.
+### Read the high level, low level, pulse width, and period
+
+![Microchip PWM waveform showing the high pulse, low interval, pulse width, and complete period](https://developerhelp.microchip.com/xwiki/bin/download/products/mcu-mpu/8bit-pic/peripherals/ccp/pwm/WebHome/pwm.png?rev=1.1)
+
+*Image source: [Microchip Developer Help - Pulse Width Modulation on 8-bit PIC Devices](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/8bit-pic/peripherals/ccp/pwm/).*
+
+Although Microchip uses a different MCU family in this illustration, the digital PWM waveform principle is identical to this STM32 lab:
+
+| Waveform feature | Electrical meaning | Corresponding action in `LAB5_2()` |
+|---|---|---|
+| High level, or top of the square wave | GPIO output is high; this board's active-high LED is on. | `HAL_GPIO_WritePin(..., GPIO_PIN_SET)` |
+| Low level, or bottom of the square wave | GPIO output is low; the LED is off. | `HAL_GPIO_WritePin(..., GPIO_PIN_RESET)` |
+| Rising edge | The signal changes from low to high. | Start the LED on-time after resetting the timer counter. |
+| Falling edge | The signal changes from high to low. | Turn the LED off when the counter reaches `duty`. |
+| Pulse width, or `T_ON` | Length of the high portion of one PWM cycle. | Wait until `__HAL_TIM_GET_COUNTER(&htim6) >= duty`. |
+| Off-time, or `T_OFF` | Length of the low portion of one PWM cycle. | Keep the LED off until the counter reaches `100`. |
+| Period, or `T` | One complete high-plus-low cycle. | `100` TIM6 counter ticks, or approximately `1 ms`. |
+
+The relationship is:
+
+```text
+T = T_ON + T_OFF
+
+duty cycle = T_ON / T x 100%
+```
+
+The LED is not supplied with a gradually changing analog voltage. Its GPIO output switches between high and low; changing the width of the high portion changes how much time the LED spends on during each period.
+
+### Compare different duty cycles at the same frequency
+
+![NXP PWM waveforms comparing 25 percent, 50 percent, and 75 percent duty cycles at a fixed period](https://community.nxp.com/t5/image/serverpage/image-id/236673i80065EBA8B0A9EEC?v=v2)
+
+*Image source: [NXP TechSupport - PWM, PFM, and auto-skip mode comparison](https://community.nxp.com/t5/Power-Management/What-are-the-differences-between-the-PWM-amp-PFM-amp-auto-skip/td-p/1705652).*
+
+NXP explains that PWM keeps the waveform frequency fixed while changing its duty cycle. That is exactly what this project does: the complete period remains `100` TIM6 counts, while the high portion changes as `duty` moves from `0` to `100`.
+
+```c
+if (duty > 0)
+{
+    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+
+    while (__HAL_TIM_GET_COUNTER(&htim6) < (uint32_t)duty)
+    {
+    }
+}
+
+HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+
+while (__HAL_TIM_GET_COUNTER(&htim6) < 100)
+{
+}
+```
+
+For `duty = 25`, the high section lasts for `25` counts and the low section lasts for `75` counts. For `duty = 75`, those durations are reversed. The full period is still `100` counts in both cases.
+
+### Connect the rising counter ramp to the PWM output
+
+![Microchip digital PWM diagram showing an increasing timer counter, duty-cycle threshold, and resulting output waveform](https://developerhelp.microchip.com/xwiki/bin/download/applications/power/digital-power-converter-basics/digital-peripherals-mimicking-analog-behavior/transition-to-digital-pwm/WebHome/power-digital-duty-cycle.png?rev=1.1)
+
+*Image source: [Microchip Developer Help - Transition to Digital PWM](https://developerhelp.microchip.com/xwiki/bin/view/applications/power/digital-power-converter-basics/digital-peripherals-mimicking-analog-behavior/transition-to-digital-pwm/).*
+
+In the Microchip figure, a counter rises until it reaches a programmed threshold, and that comparison determines when the output waveform falls. Hardware PWM performs this comparison inside a timer peripheral. `LAB5_2()` reproduces the same concept explicitly in C:
+
+| Official digital PWM concept | Equivalent in this project |
+|---|---|
+| Increasing timer counter | `__HAL_TIM_GET_COUNTER(&htim6)` |
+| Duty-cycle compare value | `duty` |
+| Beginning of a new period | `__HAL_TIM_SET_COUNTER(&htim6, 0)` |
+| Output changes high at the beginning | `HAL_GPIO_WritePin(..., GPIO_PIN_SET)` |
+| Output changes low at the duty threshold | `HAL_GPIO_WritePin(..., GPIO_PIN_RESET)` |
+| End of the PWM period | The counter reaches `100`. |
+
+ST also publishes oscilloscope captures for `10%`, `50%`, and `80%` duty cycles in [Getting started with HRTIM, Section 3: Result](https://wiki.st.com/stm32mcu/wiki/Getting_started_with_HRTIM#3._Result). Those existing official images show the same visual concept: the period remains fixed while the high portion changes width.
 
 The ST article uses a hardware high-resolution timer; this lab recreates the same duty-cycle principle using the TIM6 counter plus a GPIO pin.
 
@@ -313,6 +385,9 @@ The physical green LED repeatedly transitions from dark to bright and back to da
 
 - [ST: Getting started with TIM - prescaler, auto-reload, update interrupts, and PWM](https://wiki.st.com/stm32mcu/wiki/Getting_started_with_TIM)
 - [ST: Getting started with HRTIM - official 10%, 50%, and 80% PWM waveform captures](https://wiki.st.com/stm32mcu/wiki/Getting_started_with_HRTIM#3._Result)
+- [Microchip Developer Help: Pulse Width Modulation on 8-bit PIC Devices](https://developerhelp.microchip.com/xwiki/bin/view/products/mcu-mpu/8bit-pic/peripherals/ccp/pwm/)
+- [Microchip Developer Help: Transition to Digital PWM](https://developerhelp.microchip.com/xwiki/bin/view/applications/power/digital-power-converter-basics/digital-peripherals-mimicking-analog-behavior/transition-to-digital-pwm/)
+- [NXP TechSupport: PWM, PFM, and auto-skip mode comparison](https://community.nxp.com/t5/Power-Management/What-are-the-differences-between-the-PWM-amp-PFM-amp-auto-skip/td-p/1705652)
 - [ST AN4776: How to use general-purpose timer peripheral on STM32 MCUs](https://www.st.com/resource/en/application_note/an4776-how-to-use-generalpurpose-timer-peripheral-on-stm32-mcus-stmicroelectronics.pdf)
 - [ST MB1225 STM32F769I-DISCO schematic](https://www.st.com/resource/en/schematic_pack/mb1225-f769i-b02_schematic.pdf)
 - [Project STM32F7 HAL TIM header](../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim.h)

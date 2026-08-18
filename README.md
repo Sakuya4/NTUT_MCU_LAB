@@ -1,6 +1,6 @@
 # NTUT MCU Lab
 
-GPIO and UART practice for the **STM32F769I-DISCO** board using STM32CubeIDE, STM32CubeMX, and the STM32 HAL.
+GPIO, UART, and ADC practice for the **STM32F769I-DISCO** board using STM32CubeIDE, STM32CubeMX, and the STM32 HAL.
 
 ## Hardware and source
 
@@ -31,6 +31,11 @@ GPIO and UART practice for the **STM32F769I-DISCO** board using STM32CubeIDE, ST
 - [LAB3-3-A - Play the ultimate password guessing game over UART](doc/LAB3-3-A.md)
 - [LAB3-3-B - Sort UART input with Quick Sort](doc/LAB3-3-B.md)
 
+### LAB4 - ADC and internal temperature sensing
+
+- [LAB4-1 - Read the internal temperature sensor with ADC1](doc/LAB4-1.md)
+- [LAB4-2 - Control LEDs according to the internal temperature](doc/LAB4-2.md)
+
 ## Selecting a lab
 
 Each lab function contains its own infinite loop, so only one lab should be called at a time in `main.c` after `MX_GPIO_Init()`:
@@ -38,7 +43,8 @@ Each lab function contains its own infinite loop, so only one lab should be call
 ```c
 MX_GPIO_Init();
 MX_USART1_UART_Init();
-LAB3_3_B();
+MX_ADC1_Init();
+LAB4_2();
 ```
 
-The current `main.c` calls `LAB3_3_B()`. LAB1 functions are stored in `Core/Src/lab01_gpio.c`, LAB2 functions are stored in `Core/Src/lab02_uart.c`, and LAB3 functions are stored in `Core/Src/lab03_uart2.c`.
+The current `main.c` calls `LAB4_2()`. LAB1 functions are stored in `Core/Src/lab01_gpio.c`, LAB2 functions are stored in `Core/Src/lab02_uart.c`, LAB3 functions are stored in `Core/Src/lab03_uart2.c`, and LAB4 functions are stored in `Core/Src/lab04_adc.c`.

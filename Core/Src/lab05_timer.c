@@ -196,7 +196,91 @@ HAL_TIM_Base_Start(&htim6);
     	}
 }
 
+/*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB5_3_B(void)
+*
+*   DESCRIPTION:
+*       Use TIM1 as a stopwatch timer.
+*       Short press the user button to Start / Stop.
+*       Long press the user button to Reset the stopwatch.
+*
+*********************************************************************/
+static volatile uint32_t stopwatchSeconds = 0;
+static volatile uint8_t stopwatchRunning = 0;
+static volatile uint8_t stopwatchUpdate = 0;
 
+void LAB5_3_B(void)
+{
+uint32_t pressStart;
+uint32_t pressTime;
+uint32_t minute;
+uint32_t second;
+char message[64];
+
+stopwatchSeconds = 0;
+stopwatchRunning = 0;
+stopwatchUpdate = 1;
+
+__HAL_TIM_SET_COUNTER(&htim1, 0);
+__HAL_TIM_CLEAR_FLAG(&htim1, TIM_FLAG_UPDATE);
+HAL_TIM_Base_Start_IT(&htim1);
+
+char text[] = "Short Press: Start / Stop, Long Press: Reset\r\n";
+HAL_UART_Transmit(&huart1, (uint8_t *)text, strlen(text), HAL_MAX_DELAY);
+
+	while(1)
+		{
+			if(HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_SET)
+				{
+				HAL_Delay(20);
+					if(HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_SET)
+						{
+						pressStart = HAL_GetTick();
+							while(HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_SET)
+								{
+								}
+						pressTime = HAL_GetTick() - pressStart;
+						HAL_Delay(20);
+							if(pressTime >= 1000)
+								{
+					            stopwatchRunning = 0;
+								stopwatchSeconds = 0;
+								stopwatchUpdate = 1;
+								char resetText[] = "Reset\r\n";
+								HAL_UART_Transmit(&huart1, (uint8_t *)resetText, strlen(resetText), HAL_MAX_DELAY);
+								}
+							else
+								{
+									if(stopwatchRunning == 0)
+										{
+										stopwatchRunning = 1;
+										__HAL_TIM_SET_COUNTER(&htim1, 0);
+										__HAL_TIM_CLEAR_FLAG(&htim1, TIM_FLAG_UPDATE);
+										char startText[] = "Start\r\n";
+										HAL_UART_Transmit(&huart1, (uint8_t *)startText, strlen(startText), HAL_MAX_DELAY);
+										}
+									else
+										{
+							            stopwatchRunning = 0;
+										char stopText[] = "Stop\r\n";
+										HAL_UART_Transmit(&huart1, (uint8_t *)stopText, strlen(stopText), HAL_MAX_DELAY);
+										}
+								}
+						}
+				}
+			if(stopwatchUpdate == 1)
+				{
+				stopwatchUpdate = 0;
+	            minute = stopwatchSeconds / 60;
+	            second = stopwatchSeconds % 60;
+	            snprintf(message, sizeof(message), "Stopwatch: %02lu:%02lu\r\n", (unsigned long)minute, (unsigned long)second);
+	            HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+				}
+		}
+
+}
 /*********************************************************************
  *
  * TOOL
@@ -227,6 +311,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         }
 
         timerUpdate = 1;
+
+        if(stopwatchRunning==1)
+        {
+            stopwatchSeconds++;
+            stopwatchUpdate = 1;
+        }
     }
 }
 

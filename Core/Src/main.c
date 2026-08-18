@@ -105,7 +105,7 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-  LAB5_3_A();
+  LAB5_3_B();
   /* USER CODE END 2 */
 
   /* Infinite loop */

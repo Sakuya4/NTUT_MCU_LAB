@@ -81,38 +81,48 @@ HAL_TIM_Base_Start_IT(&htim1);
 *       LAB5_2(void)
 *
 *   DESCRIPTION:
-*       Use Timer interrupt to generate software PWM for the onboard LED.
-*       Duty cycle changes from 1% to 100%, then from 100% to 1%
+*       Use the TIM6 counter to generate software PWM for the onboard LED.
+*       Duty cycle changes from 0% to 100%, then from 100% to 0%
 *       to create a breathing light effect.
 *
 *********************************************************************/
-static volatile uint8_t pwmCounter = 0;
-static volatile uint8_t pwmDuty = 1;
-
-
 void LAB5_2(void)
 {
+    int32_t duty = 0;
+    int32_t direction = 1;
+
     HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-
-    pwmCounter = 0;
-    pwmDuty = 1;
-
-    HAL_TIM_Base_Start_IT(&htim6);
+    __HAL_TIM_SET_AUTORELOAD(&htim6, 0xFFFF);
+    HAL_TIM_Base_Start(&htim6);
 
     while (1)
     {
-        /* Dark -> Bright */
-        for (int32_t duty = 1; duty <= 19; duty++)
+        /* Keep each brightness level for 20 PWM periods. */
+        for (uint32_t cycle = 0; cycle < 20; cycle++)
         {
-            pwmDuty = duty;
-            HAL_Delay(150);
+            __HAL_TIM_SET_COUNTER(&htim6, 0);
+
+            if (duty > 0)
+            {
+                HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+
+                while (__HAL_TIM_GET_COUNTER(&htim6) < (uint32_t)duty)
+                {
+                }
+            }
+
+            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+
+            while (__HAL_TIM_GET_COUNTER(&htim6) < 100)
+            {
+            }
         }
 
-        /* Bright -> Dark */
-        for (int32_t duty = 19; duty >= 1; duty--)
+        duty += direction;
+
+        if (duty >= 100 || duty <= 0)
         {
-            pwmDuty = duty;
-            HAL_Delay(150);
+            direction = -direction;
         }
     }
 }
@@ -147,25 +157,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         }
 
         timerUpdate = 1;
-    }
-
-    if (htim->Instance == TIM6)
-    {
-        pwmCounter++;
-
-        if (pwmCounter >= 20)
-        {
-            pwmCounter = 0;
-        }
-
-        if (pwmCounter < pwmDuty)
-        {
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-        }
-        else
-        {
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-        }
     }
 }
 

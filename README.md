@@ -1,6 +1,6 @@
 # NTUT MCU Lab
 
-GPIO, UART, and ADC practice for the **STM32F769I-DISCO** board using STM32CubeIDE, STM32CubeMX, and the STM32 HAL.
+GPIO, UART, ADC, timer, software PWM, and stopwatch practice for the **STM32F769I-DISCO** board using STM32CubeIDE, STM32CubeMX, and the STM32 HAL.
 
 ## Hardware and source
 
@@ -36,6 +36,13 @@ GPIO, UART, and ADC practice for the **STM32F769I-DISCO** board using STM32CubeI
 - [LAB4-1 - Read the internal temperature sensor with ADC1](doc/LAB4-1.md)
 - [LAB4-2 - Control LEDs according to the internal temperature](doc/LAB4-2.md)
 
+### LAB5 - Timers, software PWM, and stopwatch control
+
+- [LAB5-1 - Build a UART clock with a one-second TIM1 interrupt](doc/LAB5-1.md)
+- [LAB5-2 - Create a breathing LED with TIM6 and software PWM](doc/LAB5-2.md)
+- [LAB5-3-A - Control breathing LED speed over UART](doc/LAB5-3-A.md)
+- [LAB5-3-B - Control a stopwatch with short and long button presses](doc/LAB5-3-B.md)
+
 ## Selecting a lab
 
 Each lab function contains its own infinite loop, so only one lab should be called at a time in `main.c` after `MX_GPIO_Init()`:
@@ -44,7 +51,9 @@ Each lab function contains its own infinite loop, so only one lab should be call
 MX_GPIO_Init();
 MX_USART1_UART_Init();
 MX_ADC1_Init();
-LAB4_2();
+MX_TIM1_Init();
+MX_TIM6_Init();
+LAB5_3_B();
 ```
 
-The current `main.c` calls `LAB4_2()`. LAB1 functions are stored in `Core/Src/lab01_gpio.c`, LAB2 functions are stored in `Core/Src/lab02_uart.c`, LAB3 functions are stored in `Core/Src/lab03_uart2.c`, and LAB4 functions are stored in `Core/Src/lab04_adc.c`.
+The current `main.c` calls `LAB5_3_B()`. LAB1 functions are stored in `Core/Src/lab01_gpio.c`, LAB2 functions are stored in `Core/Src/lab02_uart.c`, LAB3 functions are stored in `Core/Src/lab03_uart2.c`, LAB4 functions are stored in `Core/Src/lab04_adc.c`, and LAB5 functions are stored in `Core/Src/lab05_timer.c`.

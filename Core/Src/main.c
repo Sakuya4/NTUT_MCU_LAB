@@ -93,7 +93,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  LAB3_3_A();
+  LAB3_3_B();
   /* USER CODE END 2 */
 
   /* Infinite loop */

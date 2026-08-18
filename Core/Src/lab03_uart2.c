@@ -6,6 +6,8 @@
 
 extern UART_HandleTypeDef huart1;
 static void UART_ReadLine(char *buffer, uint16_t size); // tool
+static void QuickSort(int32_t numbers[], int32_t left, int32_t right); //3-3-B will use it, or you can use bubble sort or other
+
 
 /*********************************************************************
 *
@@ -254,6 +256,62 @@ int32_t max;
 }
 
 /*********************************************************************
+*
+*   PROCEDURE NAME:
+*       LAB3_3_B(void)
+*
+*   DESCRIPTION:
+*       Sort a list of numbers entered by the user in ascending order.
+*       e.g. 5 numbers: 8 3 10 1 6 -> 1 3 6 8 10
+*
+*********************************************************************/
+
+void LAB3_3_B(void)
+{
+char input[32];
+char message[64];
+
+int32_t numbers[10];
+int32_t count;
+
+	while(1)
+		{
+		char text[] = "\r\nType numbers to sort (1 ~ 10): ";
+		HAL_UART_Transmit(&huart1, (uint8_t *)text, strlen(text), HAL_MAX_DELAY);
+        UART_ReadLine(input, sizeof(input));
+        count = (int32_t)strtol(input, NULL, 10);
+
+        	if (count<1||count>10)
+        		{
+        		char error[]="Please input number 1~10:\r\n";
+        		HAL_UART_Transmit(&huart1, (uint8_t *)error, strlen(error), HAL_MAX_DELAY);
+        		continue;
+        		}
+        	for (int32_t i = 0; i < count; i++)
+        		{
+                snprintf(message, sizeof(message), "Number %ld: ", (long)(i + 1));
+                HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+
+                UART_ReadLine(input, sizeof(input));
+                numbers[i] = (int32_t)strtol(input, NULL, 10);
+        		}
+
+        QuickSort(numbers, 0, count - 1);
+        char result[] = "Sorted: ";
+        HAL_UART_Transmit(&huart1, (uint8_t *)result, strlen(result), HAL_MAX_DELAY);
+
+			for (int32_t i = 0; i < count; i++)
+				{
+				snprintf(message, sizeof(message), "%ld ", (long)numbers[i]);
+				HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), HAL_MAX_DELAY);
+				}
+		char newline[] = "\r\n";
+		HAL_UART_Transmit(&huart1, (uint8_t *)newline, strlen(newline), HAL_MAX_DELAY);
+		}
+}
+
+
+/*********************************************************************
  *
  * TOOL
  * DESCRIPTION: Can type long number, and use "enter" can transmit it
@@ -294,5 +352,53 @@ static void UART_ReadLine(char *buffer, uint16_t size)
     }
 }
 
+/*********************************************************************
+ *
+ * TOOL
+ * DESCRIPTION: Quick sort, use in LAB3-3-B
+ *
+ *
+*********************************************************************/
+
+static void QuickSort(int32_t numbers[], int32_t left, int32_t right)
+{
+    int32_t i = left;
+    int32_t j = right;
+    int32_t pivot = numbers[(left + right) / 2];
+    int32_t temp;
+
+    while (i <= j)
+    {
+        while (numbers[i] < pivot)
+        {
+            i++;
+        }
+
+        while (numbers[j] > pivot)
+        {
+            j--;
+        }
+
+        if (i <= j)
+        {
+            temp = numbers[i];
+            numbers[i] = numbers[j];
+            numbers[j] = temp;
+
+            i++;
+            j--;
+        }
+    }
+
+    if (left < j)
+    {
+        QuickSort(numbers, left, j);
+    }
+
+    if (i < right)
+    {
+        QuickSort(numbers, i, right);
+    }
+}
 
 

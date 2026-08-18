@@ -24,6 +24,12 @@ The TX and RX directions cross at the ST-LINK interface: `PA9 / VCP_TX` connects
 
 The terminal-to-board direction supplies the requested term count, while the board-to-terminal direction carries the prompt, echoed input, generated numbers, and validation messages.
 
+## User-manual cross-check
+
+[UM2033 Section 5.15](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identifies USART1 as the onboard Virtual COM Port connected to the ST-LINK USB Micro-B connector `CN16`. This existing connection carries the requested Fibonacci length from the terminal to the MCU and the generated sequence back to the PC.
+
+The terminal must use `115200` baud, `8` data bits, no parity, `1` stop bit, and no flow control; no separate UART adapter is necessary.
+
 ## CubeMX settings
 
 | Setting | Value | Reason |

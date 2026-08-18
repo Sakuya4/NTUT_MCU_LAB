@@ -24,6 +24,12 @@ The transmit path runs from `PA9 / VCP_TX` through `SB18` to `STLINK_RX`. The re
 
 The sorting task requires both connections: the PC supplies the element count and each number, and the MCU returns prompts, echoed input, and the sorted sequence.
 
+## User-manual cross-check
+
+[UM2033 Section 5.15](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identifies the onboard USART1-to-ST-LINK Virtual COM Port path through USB connector `CN16`. The unsorted values and the sorted result use this same bidirectional USB serial connection.
+
+Open the ST-LINK COM port at `115200` baud, `8` data bits, no parity, `1` stop bit, and no flow control. An additional USB-to-UART converter is unnecessary.
+
 ## CubeMX settings
 
 | Setting | Value | Reason |

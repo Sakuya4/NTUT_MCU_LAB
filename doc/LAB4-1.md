@@ -36,6 +36,12 @@ This lab intentionally does not use those connector pins. CubeMX instead enables
 
 The board schematic maps `PA9` to `VCP_TX` and `PA10` to `VCP_RX`. The transmit path reaches the ST-LINK controller through `VCP_TX -> SB18 -> STLINK_RX`, and the ST-LINK USB connection exposes the serial output to the computer. This lab only transmits measurements, although USART1 remains configured for both TX and RX.
 
+## User-manual cross-check
+
+[UM2033 Section 6.2, Table 6](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) lists external Arduino analog connector `CN14`, including `A0 = PA6 / ADC1_IN6` and `A1 = PA4 / ADC1_IN4`. Those pins are useful for a different external-analog-input exercise, but they are **not used here**: this lab selects the MCU's internal `ADC_CHANNEL_TEMPSENSOR` and needs no sensor wiring.
+
+Section 5.15 documents the USART1 Virtual COM Port at `CN16`. Open that port at `115200 8N1` to view the internal-temperature readings.
+
 ## CubeMX settings
 
 ### ADC1

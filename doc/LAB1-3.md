@@ -20,6 +20,12 @@ The schematic connects the `B_USER` signal to `PA0/WKUP`. `R70` provides an exte
 
 The LED cathode is connected to ground, so its GPIO output is also active high.
 
+## User-manual cross-check
+
+[UM2033 Section 5.16](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identifies blue `B1` as the user button and explicitly states that its input is `1` when pressed and `0` when released. The nearby black `B2` is the reset button and must not be used for this exercise.
+
+Table 4 maps green `LD2` to `PJ5`, which is named `LED1` in this project. Follow the B-02 schematic rather than the contradictory active-low sentence in the manual: the LED is active high.
+
 ## CubeMX settings
 
 | Pin | Project label | Mode | Pull | Reason |

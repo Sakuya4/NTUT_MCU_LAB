@@ -40,6 +40,12 @@ These LED circuits are active high: writing `GPIO_PIN_SET` turns the associated 
 
 `PA9` is connected to `VCP_TX`, and `PA10` is connected to `VCP_RX`. The board routes MCU transmission through `VCP_TX -> SB18 -> STLINK_RX`, allowing the ST-LINK USB connection to present the temperature messages on the computer's Virtual COM Port.
 
+## User-manual cross-check
+
+[UM2033 Sections 5.15, 5.16, and 6.2](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identify the relevant board hardware. USART1 reaches the PC through `CN16`; physical green `LD2` uses `PJ5`; and physical red `LD1` uses `PJ13`.
+
+The analog `CN14` header described in Table 6 is not needed because the selected ADC source is the internal temperature sensor. Configure the terminal for `115200 8N1`, and follow the B-02 schematic for active-high LED polarity rather than the manual's contradictory LED sentence.
+
 ## CubeMX settings
 
 ### ADC1

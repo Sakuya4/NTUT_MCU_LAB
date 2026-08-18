@@ -44,6 +44,12 @@ __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty);
 
 Those two lines cannot magically turn TIM6 into a channel-based PWM timer or reroute the existing onboard LED.
 
+## User-manual cross-check
+
+[UM2033 Section 5.16, Table 4](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) confirms that the physical green `LD2` is connected to `PJ5`; this project names that pin `LED1`. The manual does not assign a timer PWM channel to the onboard user LED, and TIM6 is used here only as a free-running software time base.
+
+Use the MB1225 B-02 schematic to resolve the manual's contradictory active-low LED description: `GPIO_PIN_SET` turns `LD2` on, and `GPIO_PIN_RESET` turns it off. The `CN16` ST-LINK connection is sufficient for downloading and powering the exercise; a serial terminal and TIM6 NVIC interrupt are not required by this implementation.
+
 ## CubeMX settings
 
 | Setting | Current value | Reason |

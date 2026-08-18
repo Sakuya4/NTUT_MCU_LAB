@@ -26,6 +26,12 @@ Project `LED1` uses `PJ5`, which drives the `LD_USER2` net, resistor `R63`, and 
 
 `PA9 / VCP_TX` sends the speed prompt and confirmation to the PC. `PA10 / VCP_RX` receives the selected speed through the onboard ST-LINK Virtual COM Port.
 
+## User-manual cross-check
+
+[UM2033 Sections 5.15 and 5.16](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identify both interfaces used here. USART1 is available through the onboard ST-LINK Virtual COM Port at `CN16`, and physical green `LD2` is controlled by `PJ5`, which this project labels `LED1`.
+
+Open the terminal at `115200 8N1` to enter speed levels `1` through `5`. Follow the B-02 schematic for active-high LED behavior; the surrounding manual prose incorrectly describes the user LED polarity for this board revision. TIM6 supplies the software time base and does not need an output channel or an interrupt.
+
 ## CubeMX settings
 
 | Setting | Current value | Reason |

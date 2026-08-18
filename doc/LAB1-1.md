@@ -16,6 +16,12 @@ Both LED cathodes are connected to ground. The MCU drives each LED anode through
 
 Because the LEDs are simple digital loads, I configure `PJ5` and `PJ13` as low-speed push-pull outputs with no internal pull resistors.
 
+## User-manual cross-check
+
+[UM2033 Section 5.16, Table 4](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identifies physical red `LD1` on `PJ13` and physical green `LD2` on `PJ5`. Therefore, project label `LED1` controls physical `LD2`, and project label `LED2` controls physical `LD1`.
+
+The manual's nearby active-low sentence contradicts the MB1225 B-02 schematic. For this board revision, the schematic is authoritative: both LED outputs are active high.
+
 ## CubeMX settings
 
 | Pin | Project label | Mode | Initial level | Reason |

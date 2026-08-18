@@ -14,6 +14,12 @@ Set the two user LED outputs to known states and exchange those states every 500
 
 The LED cathodes are connected to ground, so the circuits are active high. `GPIO_PIN_SET` turns an LED on, while `GPIO_PIN_RESET` turns it off. The pins remain low-speed push-pull outputs with no pull resistors.
 
+## User-manual cross-check
+
+[UM2033 Section 5.16, Table 4](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) maps physical red `LD1` to `PJ13` and physical green `LD2` to `PJ5`. Because this project names `PJ5` as `LED1` and `PJ13` as `LED2`, the firmware labels do not match the printed `LD1` and `LD2` designators.
+
+Although the surrounding manual text describes active-low LEDs, the B-02 schematic shows grounded cathodes. Consequently, `GPIO_PIN_SET` means on in this project.
+
 ## CubeMX settings
 
 | Pin | Project label | Mode | Reason |

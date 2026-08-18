@@ -24,6 +24,12 @@ The STM32F769 connection sheet labels `PA9` as `VCP_TX` and `PA10` as `VCP_RX`. 
 
 Unlike the transmit-only message in LAB2-2, this lab actively uses both directions: the terminal sends typed characters through `PA10`, and the firmware sends prompts, character echoes, and results through `PA9`.
 
+## User-manual cross-check
+
+[UM2033 Section 5.15](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) states that USART1 is directly available as the ST-LINK Virtual COM Port through USB connector `CN16`. Therefore, the same data-capable USB cable used for programming also carries the numbers typed on the PC and the addition result returned by the MCU.
+
+Use `115200 8N1` with no flow control. No external USB-to-UART adapter or connection to USB OTG connector `CN15` is required.
+
 ## CubeMX settings
 
 | Setting | Value | Reason |

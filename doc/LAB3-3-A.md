@@ -24,6 +24,12 @@ The ST-LINK interface receives the MCU's `VCP_TX` signal through `SB18` and driv
 
 Every guess travels from the terminal to `PA10`, while the current range, input echo, validation messages, and success message travel from `PA9` back to the terminal.
 
+## User-manual cross-check
+
+[UM2033 Section 5.15](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) states that USART1 is connected to the ST-LINK Virtual COM Port through connector `CN16`. The guessing game uses this bidirectional connection to receive each guess and send the updated range and result.
+
+Select the ST-LINK COM port at `115200 8N1`, with no flow control. Use a data-capable USB cable on `CN16`; no user-button input or external serial adapter is required.
+
 ## CubeMX settings
 
 | Setting | Value | Reason |

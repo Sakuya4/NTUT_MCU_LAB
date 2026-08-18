@@ -36,6 +36,12 @@ The schematic shows the UART directions crossing at the ST-LINK interface:
 
 LAB2-2 only calls `HAL_UART_Transmit()`, so the active data path for this lab is `PA9 -> VCP_TX -> STLINK_RX -> USB -> PC`. `PA10` is still configured because USART1 is enabled in TX/RX asynchronous mode.
 
+## User-manual cross-check
+
+[UM2033 Sections 5.15 and 5.16](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) connect this exercise to the physical board: USART1 is exposed through the onboard ST-LINK Virtual COM Port at `CN16`, while blue user button `B1` reads high when pressed.
+
+Configure the PC terminal for `115200` baud, `8` data bits, no parity, `1` stop bit, and no flow control. Table 4 also maps physical green `LD2` to project `LED1 = PJ5` and physical red `LD1` to project `LED2 = PJ13`; LED polarity must be taken from the B-02 schematic.
+
 ## CubeMX settings
 
 ### GPIO

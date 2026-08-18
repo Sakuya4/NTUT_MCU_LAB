@@ -38,6 +38,12 @@ means the button is physically pressed. This is why the code checks for `GPIO_PI
 
 The MCU sends stopwatch text from `PA9 / USART1_TX` through the onboard ST-LINK Virtual COM Port. `PA10 / USART1_RX` is also part of the configured serial interface, although the stopwatch commands themselves come from button `B1`.
 
+## User-manual cross-check
+
+[UM2033 Sections 5.15 and 5.16](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identify the stopwatch's two user interfaces: blue button `B1` is logic high when pressed, and USART1 reaches the PC through the ST-LINK Virtual COM Port at `CN16`.
+
+Use the blue `B1` for short and long presses; the black `B2` resets the MCU instead. Open the terminal at `115200 8N1` to see stopwatch output, and enable the TIM1 update interrupt so that elapsed time advances once per second.
+
 ## CubeMX settings
 
 | Setting | Current value | Reason |

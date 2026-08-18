@@ -24,6 +24,12 @@ The board routes MCU transmission through `VCP_TX -> SB18 -> STLINK_RX` and MCU 
 
 Both schematic paths are necessary: the PC sends the two input values, and the MCU returns prompts, echoed characters, the GCD, and the LCM.
 
+## User-manual cross-check
+
+[UM2033 Section 5.15](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) confirms that USART1 reaches the PC through the onboard ST-LINK Virtual COM Port at `CN16`. Both input integers therefore arrive over the normal programming USB cable, and their GCD and LCM are transmitted through the same connection.
+
+Open the ST-LINK COM port using `115200 8N1` and disable hardware flow control. `CN15` is a different USB OTG connector and is not the serial interface used here.
+
 ## CubeMX settings
 
 | Setting | Value | Reason |

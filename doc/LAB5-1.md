@@ -24,6 +24,12 @@ The transmit path is `PA9 / VCP_TX -> SB18 -> STLINK_RX`; the receive path is `S
 
 TIM1 itself is an internal MCU peripheral, so it does not require an external timer connection on the board schematic.
 
+## User-manual cross-check
+
+[UM2033 Section 5.15](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identifies USART1 as the ST-LINK Virtual COM Port on connector `CN16`. Open the PC terminal at `115200 8N1` to see each one-second clock update.
+
+The board manual describes available board-level clock sources, but this particular project's `SystemClock_Config()` selects the MCU's internal `16 MHz` HSI oscillator without the PLL. TIM1 therefore receives the project-configured internal clock; no external timer pin or external-crystal setup is required for this lab.
+
 ## CubeMX settings
 
 | Peripheral or setting | Current value | Why it is required |

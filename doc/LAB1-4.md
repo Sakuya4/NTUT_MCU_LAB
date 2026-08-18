@@ -18,6 +18,12 @@ The button circuit is active high. The external pull-down path holds `PA0` low w
 
 The LED circuit is also active high, so `PJ5` remains a low-speed push-pull output. The new software concept is rising-edge detection: compare the current button sample with the previous sample and react only when the state changes from low to high.
 
+## User-manual cross-check
+
+[UM2033 Section 5.16](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) confirms that blue user button `B1` produces logic `1` when pressed and logic `0` when released. This is why a valid press is a low-to-high transition on `PA0`.
+
+Table 4 identifies physical green `LD2` on `PJ5`; its project label is `LED1`. Its active-high behavior comes from the B-02 schematic, despite the conflicting active-low sentence in the manual.
+
 ## CubeMX settings
 
 | Pin | Project label | Mode | Pull | Reason |

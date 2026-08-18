@@ -20,6 +20,12 @@ The `B_USER` signal is connected to `PA0/WKUP`. `R70` provides an external pull-
 
 The two LED cathodes are connected to ground. Their MCU pins must therefore be configured as active-high, low-speed push-pull outputs with no pull resistors.
 
+## User-manual cross-check
+
+[UM2033 Section 5.16 and Table 4](https://www.st.com/resource/en/user_manual/um2033-discovery-kit-with-stm32f769ni-mcu-stmicroelectronics.pdf) identify the three board controls used by this counter: blue user button `B1`, physical red `LD1` on `PJ13`, and physical green `LD2` on `PJ5`. A pressed `B1` reads high.
+
+Remember that project `LED1` means physical `LD2`, while project `LED2` means physical `LD1`. The B-02 schematic, not the contradictory active-low sentence in the manual, establishes that both LED outputs are active high.
+
 ## CubeMX settings
 
 | Pin | Project label | Mode | Pull | Purpose |
